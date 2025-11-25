@@ -41,7 +41,7 @@ export function Modal({
       onClick={onClose}
     >
       <div
-        className="bg-white p-6 rounded-2xl max-w-lg w-full text-black mx-4"
+        className="bg-white p-6 rounded-2xl max-w-2xl w-full text-black mx-4 max-h-[90vh] overflow-y-auto"
         tabIndex={-1}
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}

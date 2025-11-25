@@ -19,3 +19,9 @@ export type Job = {
   status: StatusVariant;
   description: string;
 };
+
+export interface JobActionState {
+  success: boolean;
+  errors?: { [key: string]: string };
+  message: string;
+}

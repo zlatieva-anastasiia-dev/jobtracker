@@ -1,6 +1,7 @@
+import { fetchJobApplications } from "@/lib/data";
 import JobDashboard from "./JobDashboard";
-import { jobs } from "@/lib/mockData";
 
 export default async function JobsRoutePage() {
+  const jobs = await fetchJobApplications();
   return <JobDashboard jobData={jobs} />;
 }

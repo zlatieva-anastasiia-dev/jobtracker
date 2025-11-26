@@ -2,25 +2,29 @@
 import { useRouter } from "next/navigation";
 import { IconButton } from "../ui/IconButton";
 import { Trash2, Pencil } from "lucide-react";
+import { deleteJob } from "@/app/actions/jobActions";
+import { useTransition } from "react";
 
 type JobActionsProps = {
   jobId: string;
-  onEdit?: (jobId: string) => void;
-  onDelete?: (jobId: string) => void;
 };
 
-export function JobActions({ jobId, onEdit, onDelete }: JobActionsProps) {
+export function JobActions({ jobId }: JobActionsProps) {
   const router = useRouter();
+
+  const [isPending, startTransition] = useTransition();
+
   const handleEdit = () => {
-    router.push(`/jobs?modal=edit&jobId=${jobId}`);
+    router.push(`/jobs?modal=edit&jobId=${jobId}`, { scroll: false });
   };
 
   const handleDelete = () => {
-    if (onDelete) {
-      onDelete(jobId);
-    } else {
-      console.log("Delete", jobId);
-    }
+    if (!confirm("Are you sure you want to delete this job?")) return;
+
+    startTransition(async () => {
+      await deleteJob(jobId);
+      router.refresh();
+    });
   };
 
   return (
@@ -37,6 +41,7 @@ export function JobActions({ jobId, onEdit, onDelete }: JobActionsProps) {
           colorClass="text-red-500"
           onClick={handleDelete}
           aria-label="Delete job"
+          disabled={isPending}
         />
       </div>
     </>

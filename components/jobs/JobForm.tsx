@@ -1,11 +1,10 @@
 "use client";
 
-import { createJob } from "@/app/actions/jobActions";
+import { createJob, editJob } from "@/app/actions/jobActions";
 import { initialActionState } from "@/lib/constants";
 import { Job } from "@/types/types";
 import { useRouter } from "next/navigation";
 import { useActionState } from "react";
-import Form from "next/form";
 
 export function JobForm({
   mode,
@@ -13,13 +12,14 @@ export function JobForm({
   initialData,
 }: {
   mode: "new" | "edit";
-
   jobId?: string;
   initialData?: Job;
 }) {
   const router = useRouter();
+
+  const action = mode === "new" ? createJob : editJob;
   const [state, formAction, isPending] = useActionState(
-    createJob,
+    action,
     initialActionState
   );
 
@@ -32,7 +32,8 @@ export function JobForm({
       <h2 className="text-2xl font-bold mb-6 text-gray-900">
         {mode === "new" ? "Create New Job" : "Edit Job"}
       </h2>
-      <Form className="space-y-6" action={formAction} noValidate>
+      <form className="space-y-6" action={formAction} noValidate>
+        {mode === "edit" && <input type="hidden" name="jobId" value={jobId} />}
         <div>
           <label
             htmlFor="title"
@@ -50,6 +51,7 @@ export function JobForm({
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
           />
         </div>
+
         <div>
           <label
             htmlFor="company"
@@ -62,10 +64,12 @@ export function JobForm({
             id="company"
             name="company"
             required
+            defaultValue={initialData?.company || ""}
             placeholder="e.g. Tech Corp"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
           />
         </div>
+
         <div>
           <label
             htmlFor="location"
@@ -78,10 +82,33 @@ export function JobForm({
             id="location"
             name="location"
             required
+            defaultValue={initialData?.location || ""}
             placeholder="e.g. New York, NY"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
           />
         </div>
+
+        <div>
+          <label
+            htmlFor="date"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Application Date <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="date"
+            id="date"
+            name="date"
+            required
+            defaultValue={
+              initialData?.date
+                ? new Date(initialData.date).toISOString().split("T")[0]
+                : ""
+            }
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+          />
+        </div>
+
         <div>
           <label
             htmlFor="status"
@@ -103,6 +130,7 @@ export function JobForm({
             <option value="closed">Closed</option>
           </select>
         </div>
+
         <div>
           <label
             htmlFor="description"
@@ -115,9 +143,11 @@ export function JobForm({
             name="description"
             rows={4}
             placeholder="Job description, requirements, notes..."
+            defaultValue={initialData?.description || ""}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors resize-vertical"
           />
         </div>
+
         <fieldset className="border border-gray-200 rounded-lg p-4">
           <legend className="text-sm font-medium text-gray-700 px-2">
             Contact Information
@@ -135,9 +165,11 @@ export function JobForm({
                 id="contactName"
                 name="contactName"
                 placeholder="e.g. Jane Doe"
+                defaultValue={initialData?.contact?.name || ""}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
               />
             </div>
+
             <div>
               <label
                 htmlFor="contactEmail"
@@ -150,9 +182,11 @@ export function JobForm({
                 id="contactEmail"
                 name="contactEmail"
                 placeholder="jane.doe@company.com"
+                defaultValue={initialData?.contact?.email || ""}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
               />
             </div>
+
             <div>
               <label
                 htmlFor="contactPhone"
@@ -165,11 +199,13 @@ export function JobForm({
                 id="contactPhone"
                 name="contactPhone"
                 placeholder="123-456-7890"
+                defaultValue={initialData?.contact?.phone || ""}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
               />
             </div>
           </div>
         </fieldset>
+
         <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
           <button
             onClick={handleCloseForm}
@@ -194,7 +230,7 @@ export function JobForm({
             </p>
           )}
         </div>
-      </Form>
+      </form>
     </div>
   );
 }

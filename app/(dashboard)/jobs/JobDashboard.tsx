@@ -1,10 +1,11 @@
 "use client";
 import { JobCardList } from "@/components/jobs/JobCardList";
 import { JobForm } from "@/components/jobs/JobForm";
-import CreateJobButton from "@/components/layout/CreateJobButton";
+import { IconButton } from "@/components/ui/IconButton";
 import { Modal } from "@/components/ui/Modal";
 import { Job } from "@/types/types";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Plus } from "lucide-react";
 
 export default function JobDashboardPage({ jobData }: { jobData: Array<Job> }) {
   const router = useRouter();
@@ -32,7 +33,15 @@ export default function JobDashboardPage({ jobData }: { jobData: Array<Job> }) {
           />
         </Modal>
       )}
-      <CreateJobButton />
+      <div className="fixed bottom-8 right-8">
+        <IconButton
+          aria-label="Add job"
+          icon={Plus}
+          size={24}
+          variant="filled"
+          onClick={() => router.push("/jobs?modal=new")}
+        />
+      </div>
     </div>
   );
 }

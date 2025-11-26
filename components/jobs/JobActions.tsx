@@ -42,6 +42,7 @@ export function JobActions({ jobId }: JobActionsProps) {
           onClick={handleDelete}
           aria-label="Delete job"
           disabled={isPending}
+          className="text-red-500"
         />
       </div>
     </>

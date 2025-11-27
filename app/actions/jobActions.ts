@@ -7,10 +7,12 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createJob(
-  prevState: JobActionState,
+  _prevState: JobActionState,
   formData: FormData
 ): Promise<JobActionState> {
-  const rawData = Object.fromEntries(formData.entries());
+  const rawData = Object.fromEntries(formData.entries()) as {
+    [key: string]: string;
+  };
 
   const validatedJobData = JobFormSchema.safeParse(rawData);
 
@@ -26,6 +28,7 @@ export async function createJob(
           value?.[0] ?? "",
         ])
       ),
+      values: rawData,
     };
   }
 
@@ -65,7 +68,7 @@ export async function deleteJob(jobId: string): Promise<void> {
 }
 
 export async function editJob(
-  prevState: JobActionState,
+  _prevState: JobActionState,
   formData: FormData
 ): Promise<JobActionState> {
   console.log("formData in action:", formData);

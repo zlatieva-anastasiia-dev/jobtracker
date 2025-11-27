@@ -1,23 +1,20 @@
 "use client";
-
 import { createJob, editJob } from "@/app/actions/jobActions";
 import { initialActionState } from "@/lib/constants";
 import { Job } from "@/types/types";
 import { useRouter } from "next/navigation";
-import { useActionState } from "react";
+import { useActionState, useMemo } from "react";
 
-export function JobForm({
-  mode,
-  jobId,
-  initialData,
-}: {
+interface JobFormProps {
   mode: "new" | "edit";
   jobId?: string;
   initialData?: Job;
-}) {
+}
+
+export function JobForm({ mode, jobId, initialData }: JobFormProps) {
   const router = useRouter();
 
-  const action = mode === "new" ? createJob : editJob;
+  const action = useMemo(() => (mode === "new" ? createJob : editJob), [mode]);
   const [state, formAction, isPending] = useActionState(
     action,
     initialActionState
@@ -27,6 +24,18 @@ export function JobForm({
     router.replace("/jobs");
   };
 
+  const formatDateForInput = (dateValue: string | Date | undefined): string => {
+    if (!dateValue) return "";
+    const date = dateValue instanceof Date ? dateValue : new Date(dateValue);
+
+    if (isNaN(date.getTime())) return "";
+
+    return date.toISOString().split("T")[0];
+  };
+
+  const initialDate = state.values?.date ?? initialData?.date;
+  const dateValue = formatDateForInput(initialDate);
+
   return (
     <div className="w-full max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-gray-900">
@@ -35,64 +44,58 @@ export function JobForm({
       <form className="space-y-6" action={formAction} noValidate>
         {mode === "edit" && <input type="hidden" name="jobId" value={jobId} />}
         <div>
-          <label
-            htmlFor="title"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label htmlFor="title" className="block text-sm font-medium mb-2">
             Job Title <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             id="title"
             name="title"
-            required
-            defaultValue={initialData?.title || ""}
+            defaultValue={state.values?.title ?? initialData?.title ?? ""}
             placeholder="e.g. Software Engineer"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+            className="w-full px-4 py-2 border rounded-lg"
           />
+          {state.errors?.title && (
+            <p className="text-red-600 text-sm mt-1">{state.errors.title}</p>
+          )}
         </div>
 
         <div>
-          <label
-            htmlFor="company"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label htmlFor="company" className="block text-sm font-medium mb-2">
             Company <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             id="company"
             name="company"
-            required
-            defaultValue={initialData?.company || ""}
+            defaultValue={state.values?.company ?? initialData?.company ?? ""}
             placeholder="e.g. Tech Corp"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+            className="w-full px-4 py-2 border rounded-lg"
           />
+          {state.errors?.company && (
+            <p className="text-red-600 text-sm mt-1">{state.errors.company}</p>
+          )}
         </div>
 
         <div>
-          <label
-            htmlFor="location"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Location <span className="text-red-500">*</span>
+          <label htmlFor="location" className="block text-sm font-medium mb-2">
+            Location
           </label>
           <input
             type="text"
             id="location"
             name="location"
-            required
-            defaultValue={initialData?.location || ""}
+            defaultValue={state.values?.location ?? initialData?.location ?? ""}
             placeholder="e.g. New York, NY"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+            className="w-full px-4 py-2 border rounded-lg"
           />
+          {state.errors?.location && (
+            <p className="text-red-600 text-sm mt-1">{state.errors.location}</p>
+          )}
         </div>
 
         <div>
-          <label
-            htmlFor="date"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label htmlFor="date" className="block text-sm font-medium mb-2">
             Application Date <span className="text-red-500">*</span>
           </label>
           <input
@@ -100,28 +103,26 @@ export function JobForm({
             id="date"
             name="date"
             required
-            defaultValue={
-              initialData?.date
-                ? new Date(initialData.date).toISOString().split("T")[0]
-                : ""
-            }
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+            defaultValue={dateValue}
+            className="w-full px-4 py-2 border rounded-lg"
           />
+          {state.errors?.date && (
+            <p className="text-red-600 text-sm mt-1">{state.errors.date}</p>
+          )}
         </div>
 
         <div>
-          <label
-            htmlFor="status"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Status <span className="text-red-500">*</span>
+          <label htmlFor="status" className="block text-sm font-medium mb-2">
+            Status
           </label>
           <select
             id="status"
             name="status"
             required
-            defaultValue={initialData?.status || "applied"}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors bg-white"
+            defaultValue={
+              state.values?.status ?? initialData?.status ?? "applied"
+            }
+            className="w-full px-4 py-2 border rounded-lg bg-white"
           >
             <option value="applied">Applied</option>
             <option value="interview">Interview</option>
@@ -129,12 +130,15 @@ export function JobForm({
             <option value="rejected">Rejected</option>
             <option value="closed">Closed</option>
           </select>
+          {state.errors?.status && (
+            <p className="text-red-600 text-sm mt-1">{state.errors.status}</p>
+          )}
         </div>
 
         <div>
           <label
             htmlFor="description"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium mb-2"
           >
             Description
           </label>
@@ -143,20 +147,28 @@ export function JobForm({
             name="description"
             rows={4}
             placeholder="Job description, requirements, notes..."
-            defaultValue={initialData?.description || ""}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors resize-vertical"
+            defaultValue={
+              state.values?.description ?? initialData?.description ?? ""
+            }
+            className="w-full px-4 py-2 border rounded-lg resize-vertical"
           />
+          {state.errors?.description && (
+            <p className="text-red-600 text-sm mt-1">
+              {state.errors.description}
+            </p>
+          )}
         </div>
 
         <fieldset className="border border-gray-200 rounded-lg p-4">
-          <legend className="text-sm font-medium text-gray-700 px-2">
+          <legend className="text-sm font-medium px-2">
             Contact Information
           </legend>
+
           <div className="space-y-4 mt-2">
             <div>
               <label
                 htmlFor="contactName"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium mb-2"
               >
                 Contact Name
               </label>
@@ -164,16 +176,23 @@ export function JobForm({
                 type="text"
                 id="contactName"
                 name="contactName"
+                defaultValue={
+                  state.values?.contactName ?? initialData?.contact?.name ?? ""
+                }
                 placeholder="e.g. Jane Doe"
-                defaultValue={initialData?.contact?.name || ""}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                className="w-full px-4 py-2 border rounded-lg"
               />
+              {state.errors?.contactName && (
+                <p className="text-red-600 text-sm mt-1">
+                  {state.errors.contactName}
+                </p>
+              )}
             </div>
 
             <div>
               <label
                 htmlFor="contactEmail"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium mb-2"
               >
                 Contact Email
               </label>
@@ -181,16 +200,25 @@ export function JobForm({
                 type="email"
                 id="contactEmail"
                 name="contactEmail"
+                defaultValue={
+                  state.values?.contactEmail ??
+                  initialData?.contact?.email ??
+                  ""
+                }
                 placeholder="jane.doe@company.com"
-                defaultValue={initialData?.contact?.email || ""}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                className="w-full px-4 py-2 border rounded-lg"
               />
+              {state.errors?.contactEmail && (
+                <p className="text-red-600 text-sm mt-1">
+                  {state.errors.contactEmail}
+                </p>
+              )}
             </div>
 
             <div>
               <label
                 htmlFor="contactPhone"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium mb-2"
               >
                 Contact Phone
               </label>
@@ -198,10 +226,19 @@ export function JobForm({
                 type="tel"
                 id="contactPhone"
                 name="contactPhone"
+                defaultValue={
+                  state.values?.contactPhone ??
+                  initialData?.contact?.phone ??
+                  ""
+                }
                 placeholder="123-456-7890"
-                defaultValue={initialData?.contact?.phone || ""}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                className="w-full px-4 py-2 border rounded-lg"
               />
+              {state.errors?.contactPhone && (
+                <p className="text-red-600 text-sm mt-1">
+                  {state.errors.contactPhone}
+                </p>
+              )}
             </div>
           </div>
         </fieldset>
@@ -210,17 +247,24 @@ export function JobForm({
           <button
             onClick={handleCloseForm}
             type="button"
-            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            className="px-6 py-2 border rounded-lg text-gray-700 hover:bg-gray-50"
+            disabled={isPending}
           >
             Cancel
           </button>
+
           <button
             type="submit"
-            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isPending}
+            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
           >
-            {mode === "new" ? "Create Job" : "Update Job"}
+            {isPending
+              ? "Submitting..."
+              : mode === "new"
+              ? "Create Job"
+              : "Update Job"}
           </button>
+
           {state.message && (
             <p
               aria-live="polite"

@@ -9,19 +9,20 @@ export type Job = {
   id: string;
   title: string;
   company: string;
-  location: string;
+  location?: string;
   date: string;
-  contact: {
+  contact?: {
     name: string;
     email: string;
     phone: string;
   };
   status: StatusVariant;
-  description: string;
+  description?: string;
 };
 
 export interface JobActionState {
   success: boolean;
   errors?: { [key: string]: string };
   message: string;
+  values?: { [key: string]: string };
 }

@@ -71,12 +71,13 @@ export async function editJob(
   _prevState: JobActionState,
   formData: FormData
 ): Promise<JobActionState> {
-  console.log("formData in action:", formData);
   const jobId = formData.get("jobId") as string;
   if (!jobId) {
     return { success: false, message: "Missing jobId" };
   }
-  const rawData = Object.fromEntries(formData.entries());
+  const rawData = Object.fromEntries(formData.entries()) as {
+    [key: string]: string;
+  };
 
   const validatedJobData = JobFormSchema.safeParse(rawData);
 
@@ -92,6 +93,7 @@ export async function editJob(
           value?.[0] ?? "",
         ])
       ),
+      values: rawData,
     };
   }
 

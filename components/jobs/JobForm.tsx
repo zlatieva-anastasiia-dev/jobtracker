@@ -3,7 +3,13 @@ import { createJob, editJob } from "@/app/actions/jobActions";
 import { initialActionState } from "@/lib/constants";
 import { Job } from "@/types/types";
 import { useRouter } from "next/navigation";
-import { useActionState, useMemo } from "react";
+import { useActionState } from "react";
+import { FieldControl } from "../form/FieldControl";
+import { FieldInput } from "../form/FieldInput";
+import { FieldLabel } from "../form/FieldLabel";
+import { FieldError } from "../form/FiledError";
+import { FieldSelect } from "../form/FieldSelect";
+import { FieldTextarea } from "../form/FieldTextrea";
 
 interface JobFormProps {
   mode: "new" | "edit";
@@ -14,7 +20,7 @@ interface JobFormProps {
 export function JobForm({ mode, jobId, initialData }: JobFormProps) {
   const router = useRouter();
 
-  const action = useMemo(() => (mode === "new" ? createJob : editJob), [mode]);
+  const action = mode === "new" ? createJob : editJob.bind(null);
   const [state, formAction, isPending] = useActionState(
     action,
     initialActionState
@@ -32,7 +38,6 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
 
     return date.toISOString().split("T")[0];
   };
-
   const initialDate = state.values?.date ?? initialData?.date;
   const dateValue = formatDateForInput(initialDate);
 
@@ -41,164 +46,128 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
       <h2 className="text-2xl font-bold mb-6 text-gray-900">
         {mode === "new" ? "Create New Job" : "Edit Job"}
       </h2>
-      <form className="space-y-6" action={formAction} noValidate>
+      <form className="space-y-3" action={formAction} noValidate>
         {mode === "edit" && <input type="hidden" name="jobId" value={jobId} />}
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium mb-2">
-            Job Title <span className="text-red-500">*</span>
-          </label>
-          <input
+        <FieldControl
+          id="title"
+          isRequired
+          isInvalid={!!state.errors?.title}
+          errorMessage={state.errors?.title}
+        >
+          <FieldLabel>Job Title</FieldLabel>
+          <FieldInput
             type="text"
-            id="title"
             name="title"
             defaultValue={state.values?.title ?? initialData?.title ?? ""}
             placeholder="e.g. Software Engineer"
-            className="w-full px-4 py-2 border rounded-lg"
           />
-          {state.errors?.title && (
-            <p className="text-red-600 text-sm mt-1">{state.errors.title}</p>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="company" className="block text-sm font-medium mb-2">
-            Company <span className="text-red-500">*</span>
-          </label>
-          <input
+          <FieldError />
+        </FieldControl>
+        <FieldControl
+          id="company"
+          isRequired
+          isInvalid={!!state.errors?.company}
+          errorMessage={state.errors?.company}
+        >
+          <FieldLabel>Company</FieldLabel>
+          <FieldInput
             type="text"
-            id="company"
             name="company"
             defaultValue={state.values?.company ?? initialData?.company ?? ""}
             placeholder="e.g. Tech Corp"
-            className="w-full px-4 py-2 border rounded-lg"
           />
-          {state.errors?.company && (
-            <p className="text-red-600 text-sm mt-1">{state.errors.company}</p>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="location" className="block text-sm font-medium mb-2">
-            Location
-          </label>
-          <input
+          <FieldError />
+        </FieldControl>
+        <FieldControl
+          id="location"
+          isInvalid={!!state.errors?.location}
+          errorMessage={state.errors?.location}
+        >
+          <FieldLabel>Location</FieldLabel>
+          <FieldInput
             type="text"
-            id="location"
             name="location"
             defaultValue={state.values?.location ?? initialData?.location ?? ""}
             placeholder="e.g. New York, NY"
-            className="w-full px-4 py-2 border rounded-lg"
           />
-          {state.errors?.location && (
-            <p className="text-red-600 text-sm mt-1">{state.errors.location}</p>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="date" className="block text-sm font-medium mb-2">
-            Application Date <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="date"
-            id="date"
-            name="date"
-            required
-            defaultValue={dateValue}
-            className="w-full px-4 py-2 border rounded-lg"
-          />
-          {state.errors?.date && (
-            <p className="text-red-600 text-sm mt-1">{state.errors.date}</p>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="status" className="block text-sm font-medium mb-2">
-            Status
-          </label>
-          <select
-            id="status"
+          <FieldError />
+        </FieldControl>
+        <FieldControl
+          id="date"
+          isRequired
+          isInvalid={!!state.errors?.date}
+          errorMessage={state.errors?.date}
+        >
+          <FieldLabel>Application Date</FieldLabel>
+          <FieldInput type="date" name="date" defaultValue={dateValue} />
+          <FieldError />
+        </FieldControl>
+        <FieldControl
+          id="status"
+          isInvalid={!!state.errors?.status}
+          errorMessage={state.errors?.status}
+        >
+          <FieldLabel>Status</FieldLabel>
+          <FieldSelect
             name="status"
-            required
             defaultValue={
               state.values?.status ?? initialData?.status ?? "applied"
             }
-            className="w-full px-4 py-2 border rounded-lg bg-white"
           >
             <option value="applied">Applied</option>
             <option value="interview">Interview</option>
             <option value="offer">Offer</option>
             <option value="rejected">Rejected</option>
             <option value="closed">Closed</option>
-          </select>
-          {state.errors?.status && (
-            <p className="text-red-600 text-sm mt-1">{state.errors.status}</p>
-          )}
-        </div>
+          </FieldSelect>
+          <FieldError />
+        </FieldControl>
 
-        <div>
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium mb-2"
-          >
-            Description
-          </label>
-          <textarea
-            id="description"
+        <FieldControl
+          id="description"
+          isInvalid={!!state.errors?.description}
+          errorMessage={state.errors?.description}
+        >
+          <FieldLabel>Description</FieldLabel>
+          <FieldTextarea
             name="description"
-            rows={4}
-            placeholder="Job description, requirements, notes..."
             defaultValue={
               state.values?.description ?? initialData?.description ?? ""
             }
-            className="w-full px-4 py-2 border rounded-lg resize-vertical"
           />
-          {state.errors?.description && (
-            <p className="text-red-600 text-sm mt-1">
-              {state.errors.description}
-            </p>
-          )}
-        </div>
+
+          <FieldError />
+        </FieldControl>
 
         <fieldset className="border border-gray-200 rounded-lg p-4">
           <legend className="text-sm font-medium px-2">
             Contact Information
           </legend>
-
           <div className="space-y-4 mt-2">
-            <div>
-              <label
-                htmlFor="contactName"
-                className="block text-sm font-medium mb-2"
-              >
-                Contact Name
-              </label>
-              <input
+            <FieldControl
+              id="contactName"
+              isInvalid={!!state.errors?.contactName}
+              errorMessage={state.errors?.contactName}
+            >
+              <FieldLabel>Contact Name</FieldLabel>
+              <FieldInput
                 type="text"
-                id="contactName"
                 name="contactName"
                 defaultValue={
                   state.values?.contactName ?? initialData?.contact?.name ?? ""
                 }
                 placeholder="e.g. Jane Doe"
-                className="w-full px-4 py-2 border rounded-lg"
               />
-              {state.errors?.contactName && (
-                <p className="text-red-600 text-sm mt-1">
-                  {state.errors.contactName}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label
-                htmlFor="contactEmail"
-                className="block text-sm font-medium mb-2"
-              >
-                Contact Email
-              </label>
-              <input
+              <FieldError />
+            </FieldControl>
+            <FieldControl
+              id="contactEmail"
+              isInvalid={!!state.errors?.contactEmail}
+              errorMessage={state.errors?.contactEmail}
+            >
+              <FieldLabel>Contact Email</FieldLabel>
+              <FieldInput
                 type="email"
-                id="contactEmail"
                 name="contactEmail"
                 defaultValue={
                   state.values?.contactEmail ??
@@ -206,25 +175,17 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
                   ""
                 }
                 placeholder="jane.doe@company.com"
-                className="w-full px-4 py-2 border rounded-lg"
               />
-              {state.errors?.contactEmail && (
-                <p className="text-red-600 text-sm mt-1">
-                  {state.errors.contactEmail}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label
-                htmlFor="contactPhone"
-                className="block text-sm font-medium mb-2"
-              >
-                Contact Phone
-              </label>
-              <input
+              <FieldError />
+            </FieldControl>
+            <FieldControl
+              id="contactPhone"
+              isInvalid={!!state.errors?.contactPhone}
+              errorMessage={state.errors?.contactPhone}
+            >
+              <FieldLabel>Contact Phone</FieldLabel>
+              <FieldInput
                 type="tel"
-                id="contactPhone"
                 name="contactPhone"
                 defaultValue={
                   state.values?.contactPhone ??
@@ -232,14 +193,9 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
                   ""
                 }
                 placeholder="123-456-7890"
-                className="w-full px-4 py-2 border rounded-lg"
               />
-              {state.errors?.contactPhone && (
-                <p className="text-red-600 text-sm mt-1">
-                  {state.errors.contactPhone}
-                </p>
-              )}
-            </div>
+              <FieldError />
+            </FieldControl>
           </div>
         </fieldset>
 
@@ -264,15 +220,6 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
               ? "Create Job"
               : "Update Job"}
           </button>
-
-          {state.message && (
-            <p
-              aria-live="polite"
-              className={state.success ? "text-green-600" : "text-red-600"}
-            >
-              {state.message}
-            </p>
-          )}
         </div>
       </form>
     </div>

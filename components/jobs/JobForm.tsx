@@ -7,9 +7,9 @@ import { useActionState } from "react";
 import { FieldControl } from "../form/FieldControl";
 import { FieldInput } from "../form/FieldInput";
 import { FieldLabel } from "../form/FieldLabel";
-import { FieldError } from "../form/FiledError";
+import { FieldError } from "../form/FieldError";
 import { FieldSelect } from "../form/FieldSelect";
-import { FieldTextarea } from "../form/FieldTextrea";
+import { FieldTextarea } from "../form/FieldTextarea";
 
 interface JobFormProps {
   mode: "new" | "edit";

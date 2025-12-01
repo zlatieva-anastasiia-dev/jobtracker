@@ -19,7 +19,9 @@ export function useFieldControlContext() {
   const context = useContext(FieldControlContext);
 
   if (!context) {
-    throw new Error("useFormField must be used within a FormControlWrapper.");
+    throw new Error(
+      "useFieldControlContext must be used within a FormControl."
+    );
   }
   return context;
 }

@@ -1,7 +1,7 @@
-import type { Job } from "@/types/types";
-import { supabaseServer } from "./supabase/server";
+import type { Job } from "@/types/job";
+import { supabaseServer } from "../supabase/server";
 
-export async function fetchJobApplications(): Promise<Job[]> {
+export async function getJobs(): Promise<Job[]> {
   try {
     const { data: jobs, error } = await supabaseServer
       .from("jobs")
@@ -19,9 +19,7 @@ export async function fetchJobApplications(): Promise<Job[]> {
   }
 }
 
-export async function createJobInDB(
-  jobData: Omit<Job, "id" | "created_at">,
-): Promise<Job> {
+export async function createJob(jobData: Omit<Job, "id">): Promise<Job> {
   const { data, error } = await supabaseServer
     .from("jobs")
     .insert([jobData])
@@ -36,7 +34,7 @@ export async function createJobInDB(
   return data as Job;
 }
 
-export async function deleteJobFromDB(jobId: string): Promise<void> {
+export async function deleteJob(jobId: string): Promise<void> {
   const { error } = await supabaseServer.from("jobs").delete().eq("id", jobId);
 
   if (error) {
@@ -45,7 +43,7 @@ export async function deleteJobFromDB(jobId: string): Promise<void> {
   }
 }
 
-export async function editJobInDB(
+export async function editJob(
   jobId: string,
   jobData: Partial<Omit<Job, "id" | "created_at">>,
 ): Promise<Job> {

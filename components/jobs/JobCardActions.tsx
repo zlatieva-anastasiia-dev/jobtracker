@@ -2,14 +2,14 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { deleteJob } from "@/app/actions/jobActions";
+import { deleteJobAction } from "@/app/actions/job";
 import { IconButton } from "../ui/IconButton";
 
 type JobActionsProps = {
   jobId: string;
 };
 
-export function JobActions({ jobId }: JobActionsProps) {
+export function JobCardActions({ jobId }: JobActionsProps) {
   const router = useRouter();
 
   const [isPending, startTransition] = useTransition();
@@ -22,7 +22,7 @@ export function JobActions({ jobId }: JobActionsProps) {
     if (!confirm("Are you sure you want to delete this job?")) return;
 
     startTransition(async () => {
-      await deleteJob(jobId);
+      await deleteJobAction(jobId);
       router.refresh();
     });
   };

@@ -1,9 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useActionState } from "react";
-import { createJob, editJob } from "@/app/actions/jobActions";
+import { createJobAction, editJobAction } from "@/app/actions/job";
 import { initialActionState } from "@/lib/constants";
-import type { Job } from "@/types/types";
+import type { Job } from "@/types/job";
 import { FieldControl } from "../form/FieldControl";
 import { FieldError } from "../form/FieldError";
 import { FieldInput } from "../form/FieldInput";
@@ -21,7 +21,7 @@ interface JobFormProps {
 export function JobForm({ mode, jobId, initialData }: JobFormProps) {
   const router = useRouter();
 
-  const action = mode === "new" ? createJob : editJob.bind(null);
+  const action = mode === "new" ? createJobAction : editJobAction;
   const [state, formAction, isPending] = useActionState(
     action,
     initialActionState,
@@ -64,6 +64,7 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
           />
           <FieldError />
         </FieldControl>
+
         <FieldControl
           id="company"
           isRequired
@@ -100,6 +101,7 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
           errorMessage={state.errors?.date}
         >
           <FieldLabel>Application Date</FieldLabel>
+
           <FieldInput type="date" name="date" defaultValue={dateValue} />
           <FieldError />
         </FieldControl>

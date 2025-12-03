@@ -1,7 +1,7 @@
-import type { StatusVariant } from "@/types/types";
+import type { JobStatusVariant } from "@/types/job";
 
-export function StatusBadge({ status }: { status: StatusVariant }) {
-  const variantStyles: Record<StatusVariant, string> = {
+export function StatusBadge({ status }: { status: JobStatusVariant }) {
+  const variantStyles: Record<JobStatusVariant, string> = {
     applied:
       "bg-blue-100  text-blue-800  border border-blue-200  px-3 py-1 rounded-xl",
     interview:

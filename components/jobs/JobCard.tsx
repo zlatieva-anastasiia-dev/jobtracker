@@ -1,7 +1,7 @@
 import { Contact, MapPin } from "lucide-react";
-import type { Job } from "@/types/types";
+import type { Job } from "@/types/job";
 import { StatusBadge } from "../ui/StatusBadge";
-import { JobActions } from "./JobActions";
+import { JobCardActions } from "./JobCardActions";
 
 export type JobCardProps = {
   job: Job;
@@ -53,7 +53,7 @@ export function JobCard({ job }: JobCardProps) {
             </time>
           </dd>
         </dl>
-        <JobActions jobId={job.id} />
+        <JobCardActions jobId={job.id} />
       </div>
     </article>
   );

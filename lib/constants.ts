@@ -1,4 +1,5 @@
-import type { Job, JobActionState, StatusVariant } from "../types/types";
+import type { JobActionState } from "@/types/actions";
+import type { Job, JobStatusVariant } from "../types/job";
 
 export const initialJobData: Job = {
   id: "",
@@ -15,7 +16,7 @@ export const initialJobData: Job = {
   description: "",
 };
 
-export const statusOptions: StatusVariant[] = [
+export const statusOptions: JobStatusVariant[] = [
   "applied",
   "interview",
   "offer",

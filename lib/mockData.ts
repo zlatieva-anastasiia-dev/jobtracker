@@ -1,4 +1,4 @@
-import type { Job } from "@/types/types";
+import type { Job } from "@/types/actions";
 
 export const jobs: Array<Job> = [
   {

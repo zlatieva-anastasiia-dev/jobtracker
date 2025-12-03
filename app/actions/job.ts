@@ -2,13 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createJobInDB, deleteJobFromDB, editJobInDB } from "@/lib/data";
+import { createJob, deleteJob, editJob } from "@/lib/services/job";
 import { JobFormSchema } from "@/lib/validation/jobSchema";
-import type { JobActionState } from "@/types/types";
+import type { JobActionState } from "@/types/actions";
 
-export async function createJob(
+export async function createJobAction(
   _prevState: JobActionState,
-  formData: FormData,
+  formData: FormData
 ): Promise<JobActionState> {
   const rawData = Object.fromEntries(formData.entries()) as {
     [key: string]: string;
@@ -22,12 +22,7 @@ export async function createJob(
     return {
       success: false,
       message: "Validation failed. Please check the form.",
-      errors: Object.fromEntries(
-        Object.entries(formFieldErrors).map(([key, value]) => [
-          key,
-          value?.[0] ?? "",
-        ]),
-      ),
+      errors: formFieldErrors as Record<string, string>,
       values: rawData,
     };
   }
@@ -45,36 +40,32 @@ export async function createJob(
   };
 
   try {
-    await createJobInDB(jobDataForDB);
+    await createJob(jobDataForDB);
     revalidatePath("/jobs");
-  } catch (error) {
-    console.log("Database error:", error);
+  } catch (_error) {
     return {
       success: false,
-      message: "An unexpected database error occurred.",
-      errors: undefined,
+      message: "Failed to create job due to a database error.",
     };
   }
   redirect("/jobs");
 }
 
-export async function deleteJob(jobId: string): Promise<void> {
+export async function deleteJobAction(jobId: string): Promise<void> {
   try {
-    await deleteJobFromDB(jobId);
+    await deleteJob(jobId);
     revalidatePath("/jobs");
   } catch (error) {
     console.log("Database error:", error);
   }
 }
 
-export async function editJob(
+export async function editJobAction(
   _prevState: JobActionState,
-  formData: FormData,
+  formData: FormData
 ): Promise<JobActionState> {
   const jobId = formData.get("jobId") as string;
-  if (!jobId) {
-    return { success: false, message: "Missing jobId" };
-  }
+
   const rawData = Object.fromEntries(formData.entries()) as {
     [key: string]: string;
   };
@@ -87,12 +78,7 @@ export async function editJob(
     return {
       success: false,
       message: "Validation failed. Please check the form.",
-      errors: Object.fromEntries(
-        Object.entries(formFieldErrors).map(([key, value]) => [
-          key,
-          value?.[0] ?? "",
-        ]),
-      ),
+      errors: formFieldErrors as Record<string, string>,
       values: rawData,
     };
   }
@@ -110,7 +96,7 @@ export async function editJob(
   };
 
   try {
-    await editJobInDB(jobId, jobDataForDB);
+    await editJob(jobId, jobDataForDB);
     revalidatePath("/jobs");
   } catch (error) {
     console.log("Database error:", error);

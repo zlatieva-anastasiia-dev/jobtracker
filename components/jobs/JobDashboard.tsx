@@ -5,9 +5,9 @@ import { JobCardList } from "@/components/jobs/JobCardList";
 import { JobForm } from "@/components/jobs/JobForm";
 import { IconButton } from "@/components/ui/IconButton";
 import { Modal } from "@/components/ui/Modal";
-import type { Job } from "@/types/types";
+import type { Job } from "@/types/job";
 
-export default function JobDashboardPage({ jobData }: { jobData: Array<Job> }) {
+export function JobDashboard({ jobData }: { jobData: Array<Job> }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const modalState = searchParams.get("modal");

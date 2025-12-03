@@ -37,7 +37,6 @@ export function Modal({ children, onClose }: ModalProps) {
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="modal-title"
     >
       <div
         className="bg-white p-6 rounded-2xl max-w-2xl w-full text-black mx-4 max-h-[90vh] overflow-y-auto"

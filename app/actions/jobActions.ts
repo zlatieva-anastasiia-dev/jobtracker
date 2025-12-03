@@ -1,14 +1,14 @@
 "use server";
 
-import { createJobInDB, deleteJobFromDB, editJobInDB } from "@/lib/data";
-import { JobFormSchema } from "@/lib/validation/jobSchema";
-import { JobActionState } from "@/types/types";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { createJobInDB, deleteJobFromDB, editJobInDB } from "@/lib/data";
+import { JobFormSchema } from "@/lib/validation/jobSchema";
+import type { JobActionState } from "@/types/types";
 
 export async function createJob(
   _prevState: JobActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<JobActionState> {
   const rawData = Object.fromEntries(formData.entries()) as {
     [key: string]: string;
@@ -26,7 +26,7 @@ export async function createJob(
         Object.entries(formFieldErrors).map(([key, value]) => [
           key,
           value?.[0] ?? "",
-        ])
+        ]),
       ),
       values: rawData,
     };
@@ -69,7 +69,7 @@ export async function deleteJob(jobId: string): Promise<void> {
 
 export async function editJob(
   _prevState: JobActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<JobActionState> {
   const jobId = formData.get("jobId") as string;
   if (!jobId) {
@@ -91,7 +91,7 @@ export async function editJob(
         Object.entries(formFieldErrors).map(([key, value]) => [
           key,
           value?.[0] ?? "",
-        ])
+        ]),
       ),
       values: rawData,
     };

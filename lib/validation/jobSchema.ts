@@ -9,7 +9,7 @@ export const JobFormSchema = z
     contactName: z.string().optional(),
     contactEmail: z.preprocess(
       (val) => (val === "" ? undefined : val),
-      z.string().email("Invalid email address.").optional()
+      z.string().email("Invalid email address.").optional(),
     ),
     contactPhone: z.string().optional(),
     status: z.enum(["applied", "interview", "offer", "rejected", "closed"]),

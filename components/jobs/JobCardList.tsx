@@ -1,4 +1,4 @@
-import { Job } from "@/types/types";
+import type { Job } from "@/types/types";
 import { JobCard } from "./JobCard";
 
 export function JobCardList({ jobs }: { jobs: Array<Job> }) {

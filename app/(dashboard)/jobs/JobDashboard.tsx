@@ -1,11 +1,11 @@
 "use client";
+import { Plus } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { JobCardList } from "@/components/jobs/JobCardList";
 import { JobForm } from "@/components/jobs/JobForm";
 import { IconButton } from "@/components/ui/IconButton";
 import { Modal } from "@/components/ui/Modal";
-import { Job } from "@/types/types";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Plus } from "lucide-react";
+import type { Job } from "@/types/types";
 
 export default function JobDashboardPage({ jobData }: { jobData: Array<Job> }) {
   const router = useRouter();

@@ -1,4 +1,4 @@
-import { StatusVariant } from "@/types/types";
+import type { StatusVariant } from "@/types/types";
 
 export function StatusBadge({ status }: { status: StatusVariant }) {
   const variantStyles: Record<StatusVariant, string> = {
@@ -14,7 +14,7 @@ export function StatusBadge({ status }: { status: StatusVariant }) {
       "bg-gray-100  text-gray-700  border border-gray-200  px-3 py-1 rounded-xl",
   };
   return (
-    <span role="status" className={variantStyles[status]}>
+    <span className={variantStyles[status]}>
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>
   );

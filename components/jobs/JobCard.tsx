@@ -1,7 +1,7 @@
-import { Job } from "@/types/types";
-import { JobActions } from "./JobActions";
+import { Contact, MapPin } from "lucide-react";
+import type { Job } from "@/types/types";
 import { StatusBadge } from "../ui/StatusBadge";
-import { MapPin, Contact } from "lucide-react";
+import { JobActions } from "./JobActions";
 
 export type JobCardProps = {
   job: Job;
@@ -24,13 +24,21 @@ export function JobCard({ job }: JobCardProps) {
         </div>
         <div className="flex items-center gap-1">
           <Contact className="w-4 h-4 text-gray-500" />
-          <dt className="sr-only">Contact Details</dt>{" "}
+          <dt className="sr-only">Contact Details</dt>
           <dd>
-            {job.contact.name} | {job.contact.email} | {job.contact.phone}
+            {job.contact ? (
+              <>
+                <span>{job.contact.name}</span> |
+                <span>{job.contact.email}</span> |
+                <span>{job.contact.phone}</span>
+              </>
+            ) : (
+              <span className="text-gray-500">No contact info</span>
+            )}
           </dd>
         </div>
       </dl>
-      <p className="text-gray-700 text-md">{job.description}</p>
+      <p className="text-gray-700 text-md line-clamp-1">{job.description}</p>
       <hr className="border-gray-300" />
       <div className="flex justify-between items-center">
         <dl className="text-sm text-gray-600">

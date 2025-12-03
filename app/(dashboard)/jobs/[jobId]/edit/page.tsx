@@ -13,8 +13,6 @@ export default async function EditJobPage({ params }: EditPageProps) {
   const jobData = await fetchJobById(jobId);
 
   if (!jobData) {
-    // Best Practice: Handle 404/Not Found gracefully
-    // In a real app, you would use notFound() from next/navigation
     return <h1>Job ID {jobId} Not Found</h1>;
   }
 

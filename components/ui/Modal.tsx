@@ -2,14 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { Button } from "./Button";
 
-export function Modal({
-  children,
-  onClose,
-}: {
+interface ModalProps {
   children: React.ReactNode;
   onClose: () => void;
-}) {
+}
+
+export function Modal({ children, onClose }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,25 +38,23 @@ export function Modal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
-      onClick={onClose}
     >
       <div
         className="bg-white p-6 rounded-2xl max-w-2xl w-full text-black mx-4 max-h-[90vh] overflow-y-auto"
         tabIndex={-1}
         ref={modalRef}
-        onClick={(e) => e.stopPropagation()}
       >
-        <button
+        <Button
           className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 text-xl"
           onClick={onClose}
           aria-label="Close modal"
         >
           ✕
-        </button>
+        </Button>
 
         {children}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

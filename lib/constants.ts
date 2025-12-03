@@ -1,4 +1,4 @@
-import { Job, JobActionState, StatusVariant } from "../types/types";
+import type { Job, JobActionState, StatusVariant } from "../types/types";
 
 export const initialJobData: Job = {
   id: "",

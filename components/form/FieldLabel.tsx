@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useFieldControlContext } from "./FieldControl";
 
 export function FieldLabel({ children }: { children: ReactNode }) {

@@ -1,9 +1,9 @@
 "use client";
+import { Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { IconButton } from "../ui/IconButton";
-import { Trash2, Pencil } from "lucide-react";
-import { deleteJob } from "@/app/actions/jobActions";
 import { useTransition } from "react";
+import { deleteJob } from "@/app/actions/jobActions";
+import { IconButton } from "../ui/IconButton";
 
 type JobActionsProps = {
   jobId: string;
@@ -28,23 +28,15 @@ export function JobActions({ jobId }: JobActionsProps) {
   };
 
   return (
-    <>
-      <div className="flex gap-2">
-        <IconButton
-          icon={Pencil}
-          colorClass="text-gray-800"
-          onClick={handleEdit}
-          aria-label="Edit job"
-        />
-        <IconButton
-          icon={Trash2}
-          colorClass="text-red-500"
-          onClick={handleDelete}
-          aria-label="Delete job"
-          disabled={isPending}
-          className="text-red-500"
-        />
-      </div>
-    </>
+    <div className="flex gap-2">
+      <IconButton icon={Pencil} onClick={handleEdit} aria-label="Edit job" />
+      <IconButton
+        icon={Trash2}
+        onClick={handleDelete}
+        aria-label="Delete job"
+        disabled={isPending}
+        variant="danger"
+      />
+    </div>
   );
 }

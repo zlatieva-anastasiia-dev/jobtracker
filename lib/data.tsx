@@ -1,9 +1,12 @@
-import { Job } from "@/types/types";
+import type { Job } from "@/types/types";
 import { supabaseServer } from "./supabase/server";
 
 export async function fetchJobApplications(): Promise<Job[]> {
   try {
-    const { data: jobs, error } = await supabaseServer.from("jobs").select("*");
+    const { data: jobs, error } = await supabaseServer
+      .from("jobs")
+      .select("*")
+      .order("created_at", { ascending: false });
     if (error) {
       console.error("Error fetching jobs:", error);
       throw new Error("Failed to fetch job applications");
@@ -17,7 +20,7 @@ export async function fetchJobApplications(): Promise<Job[]> {
 }
 
 export async function createJobInDB(
-  jobData: Omit<Job, "id" | "created_at">
+  jobData: Omit<Job, "id" | "created_at">,
 ): Promise<Job> {
   const { data, error } = await supabaseServer
     .from("jobs")
@@ -44,7 +47,7 @@ export async function deleteJobFromDB(jobId: string): Promise<void> {
 
 export async function editJobInDB(
   jobId: string,
-  jobData: Partial<Omit<Job, "id" | "created_at">>
+  jobData: Partial<Omit<Job, "id" | "created_at">>,
 ): Promise<Job> {
   const { data, error } = await supabaseServer
     .from("jobs")

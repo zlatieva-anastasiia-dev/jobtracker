@@ -20,7 +20,7 @@ export function useFieldControlContext() {
 
   if (!context) {
     throw new Error(
-      "useFieldControlContext must be used within a FormControl."
+      "useFieldControlContext must be used within a FormControl.",
     );
   }
   return context;

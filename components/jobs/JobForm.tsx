@@ -1,15 +1,16 @@
 "use client";
-import { createJob, editJob } from "@/app/actions/jobActions";
-import { initialActionState } from "@/lib/constants";
-import { Job } from "@/types/types";
 import { useRouter } from "next/navigation";
 import { useActionState } from "react";
+import { createJob, editJob } from "@/app/actions/jobActions";
+import { initialActionState } from "@/lib/constants";
+import type { Job } from "@/types/types";
 import { FieldControl } from "../form/FieldControl";
+import { FieldError } from "../form/FieldError";
 import { FieldInput } from "../form/FieldInput";
 import { FieldLabel } from "../form/FieldLabel";
-import { FieldError } from "../form/FieldError";
 import { FieldSelect } from "../form/FieldSelect";
 import { FieldTextarea } from "../form/FieldTextarea";
+import { Button } from "../ui/Button";
 
 interface JobFormProps {
   mode: "new" | "edit";
@@ -23,7 +24,7 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
   const action = mode === "new" ? createJob : editJob.bind(null);
   const [state, formAction, isPending] = useActionState(
     action,
-    initialActionState
+    initialActionState,
   );
 
   const handleCloseForm = () => {
@@ -34,7 +35,7 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
     if (!dateValue) return "";
     const date = dateValue instanceof Date ? dateValue : new Date(dateValue);
 
-    if (isNaN(date.getTime())) return "";
+    if (Number.isNaN(date.getTime())) return "";
 
     return date.toISOString().split("T")[0];
   };
@@ -200,26 +201,22 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
         </fieldset>
 
         <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
-          <button
+          <Button
             onClick={handleCloseForm}
             type="button"
-            className="px-6 py-2 border rounded-lg text-gray-700 hover:bg-gray-50"
             disabled={isPending}
+            variant="secondary"
           >
             Cancel
-          </button>
+          </Button>
 
-          <button
-            type="submit"
-            disabled={isPending}
-            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
-          >
+          <Button type="submit" disabled={isPending}>
             {isPending
               ? "Submitting..."
               : mode === "new"
-              ? "Create Job"
-              : "Update Job"}
-          </button>
+                ? "Create Job"
+                : "Update Job"}
+          </Button>
         </div>
       </form>
     </div>

@@ -83,4 +83,8 @@ test.describe("Job Tracker App", () => {
     await page.goto("https://example.com");
     await expect(page.locator("h1")).toHaveText("THIS WILL FAIL");
   });
+  test("intentional failure2", async ({ page }) => {
+    await page.goto("https://example.com");
+    await expect(page.locator("h1")).toHaveText("THIS WILL FAIL");
+  });
 });

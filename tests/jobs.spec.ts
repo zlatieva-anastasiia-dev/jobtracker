@@ -79,4 +79,8 @@ test.describe("Job Tracker App", () => {
     await firstCard.getByRole("button", { name: "Delete job" }).click();
     await expect(firstCard).not.toBeVisible();
   });
+  test("intentional failure", async ({ page }) => {
+    await page.goto("https://example.com");
+    await expect(page.locator("h1")).toHaveText("THIS WILL FAIL");
+  });
 });

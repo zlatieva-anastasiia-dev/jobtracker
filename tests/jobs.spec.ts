@@ -18,9 +18,7 @@ test.describe("Job Tracker App", () => {
 
     const hasJobs = (await jobCards.count()) > 0;
 
-    const noJobsMessage = page.getByText(
-      "No job applications found. Please add a job."
-    );
+    const noJobsMessage = page.getByText("No jobs found");
 
     if (hasJobs) {
       expect(jobCards.first()).toBeVisible();

@@ -21,7 +21,6 @@
 # debug
 npm-debug.log*
 
-
 # env files (can opt-in for committing if needed)
 .env*
 
@@ -34,3 +33,10 @@ next-env.d.ts
 
 # vscode
 .vscode/*
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

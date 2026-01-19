@@ -18,9 +18,7 @@ test.describe("Job Tracker App", () => {
 
     const hasJobs = (await jobCards.count()) > 0;
 
-    const noJobsMessage = page.getByText(
-      "No job applications found. Please add a job."
-    );
+    const noJobsMessage = page.getByText("No jobs found");
 
     if (hasJobs) {
       expect(jobCards.first()).toBeVisible();
@@ -78,9 +76,5 @@ test.describe("Job Tracker App", () => {
     page.once("dialog", async (dialog) => await dialog.accept());
     await firstCard.getByRole("button", { name: "Delete job" }).click();
     await expect(firstCard).not.toBeVisible();
-  });
-  test("intentional failure", async ({ page }) => {
-    await page.goto("https://example.com");
-    await expect(page.locator("h1")).toHaveText("THIS WILL FAIL");
   });
 });

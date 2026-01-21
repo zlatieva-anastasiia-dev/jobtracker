@@ -8,6 +8,7 @@ export type JobCardProps = {
 };
 
 export function JobCard({ job }: JobCardProps) {
+  console.log("Rendering JobCard for job:", job);
   return (
     <div
       className="group relative bg-amber-50 text-black grid gap-2 border p-4 rounded-md shadow-md hover:shadow-lg transition-shadow"

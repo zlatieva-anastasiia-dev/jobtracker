@@ -8,7 +8,7 @@ import type { JobActionState } from "@/types/actions";
 
 export async function createJobAction(
   _prevState: JobActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<JobActionState> {
   const rawData = Object.fromEntries(formData.entries()) as {
     [key: string]: string;
@@ -62,7 +62,7 @@ export async function deleteJobAction(jobId: string): Promise<void> {
 
 export async function editJobAction(
   _prevState: JobActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<JobActionState> {
   const jobId = formData.get("jobId") as string;
 

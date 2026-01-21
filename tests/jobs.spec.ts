@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Job Tracker App", () => {
   test.beforeEach(async ({ page }) => {
@@ -31,7 +31,7 @@ test.describe("Job Tracker App", () => {
     await page.getByRole("button", { name: "Add Job" }).click();
 
     await expect(
-      page.getByRole("heading", { name: "Create New Job" })
+      page.getByRole("heading", { name: "Create New Job" }),
     ).toBeVisible();
 
     await page.getByLabel("Job Title").fill("Test Job Title");
@@ -49,7 +49,7 @@ test.describe("Job Tracker App", () => {
     await page.getByRole("button", { name: "Add Job" }).click();
 
     await expect(
-      page.getByRole("heading", { name: "Create New Job" })
+      page.getByRole("heading", { name: "Create New Job" }),
     ).toBeVisible();
 
     await page.getByRole("button", { name: "Create Job" }).click();

@@ -9,7 +9,10 @@ export type JobCardProps = {
 
 export function JobCard({ job }: JobCardProps) {
   return (
-    <div className="group relative bg-amber-50 text-black grid gap-2 border p-4 rounded-md shadow-md hover:shadow-lg transition-shadow" data-testid="job-card">
+    <div
+      className="group relative bg-amber-50 text-black grid gap-2 border p-4 rounded-md shadow-md hover:shadow-lg transition-shadow"
+      data-testid="job-card"
+    >
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-xl font-semibold">{job.title}</h2>
         <StatusBadge status={job.status} />

@@ -2,11 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
-import { supabaseClient } from "@/lib/supabase/client";
-import { setSessionCookie } from "@/lib/utils/cookies";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const router = useRouter();
+  const supabase = createClient();
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -15,14 +15,13 @@ export default function LoginPage() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    const { error, data } = await supabaseClient.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     if (error) {
       console.error("Error logging in:", error.message);
-    } else if (data.session) {
-      setSessionCookie(data.session.access_token);
+    } else {
       router.push("/jobs");
     }
   };

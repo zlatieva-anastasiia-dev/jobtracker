@@ -1,10 +1,10 @@
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY!;
 
 if (!supabaseUrl || !supabaseKey) {
-  throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL env var in client");
+  throw new Error("Missing Supabase Environment Variables");
 }
 
-export const supabaseClient = createClient(supabaseUrl, supabaseKey);
+export const createClient = () => createBrowserClient(supabaseUrl, supabaseKey);

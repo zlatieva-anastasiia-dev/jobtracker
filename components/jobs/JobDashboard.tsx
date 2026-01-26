@@ -5,11 +5,11 @@ import { JobCardList } from "@/components/jobs/JobCardList";
 import { JobForm } from "@/components/jobs/JobForm";
 import { IconButton } from "@/components/ui/IconButton";
 import { Modal } from "@/components/ui/Modal";
-import { supabaseClient } from "@/lib/supabase/client";
-import { deleteSessionCookie } from "@/lib/utils/cookies";
+import { createClient } from "@/lib/supabase/client";
 import type { Job } from "@/types/job";
 
 export function JobDashboard({ jobData }: { jobData: Array<Job> }) {
+  const supabase = createClient();
   const router = useRouter();
   const searchParams = useSearchParams();
   const modalState = searchParams.get("modal");
@@ -20,11 +20,10 @@ export function JobDashboard({ jobData }: { jobData: Array<Job> }) {
   const handleClose = () => router.replace("/jobs");
 
   const handleSignOut = async () => {
-    const { error } = await supabaseClient.auth.signOut();
+    const { error } = await supabase.auth.signOut();
     if (error) {
       console.error("Error signing out:", error.message);
     } else {
-      deleteSessionCookie();
       router.replace("/login");
     }
   };

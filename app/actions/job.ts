@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createJob, deleteJob, editJob } from "@/lib/services/job";
 import { JobFormSchema } from "@/lib/validation/jobSchema";
@@ -41,7 +40,6 @@ export async function createJobAction(
 
   try {
     await createJob(jobDataForDB);
-    revalidatePath("/jobs");
   } catch (_error) {
     return {
       success: false,
@@ -54,7 +52,6 @@ export async function createJobAction(
 export async function deleteJobAction(jobId: string): Promise<void> {
   try {
     await deleteJob(jobId);
-    revalidatePath("/jobs");
   } catch (error) {
     console.log("Database error:", error);
   }
@@ -97,7 +94,6 @@ export async function editJobAction(
 
   try {
     await editJob(jobId, jobDataForDB);
-    revalidatePath("/jobs");
   } catch (error) {
     console.log("Database error:", error);
     return {

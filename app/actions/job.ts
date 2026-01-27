@@ -3,12 +3,12 @@
 import { redirect } from "next/navigation";
 import { createJob, deleteJob, editJob } from "@/lib/services/job";
 import { JobFormSchema } from "@/lib/validation/jobSchema";
-import type { JobActionState } from "@/types/actions";
+import type { ActionState } from "@/types/actions";
 
 export async function createJobAction(
-  _prevState: JobActionState,
+  _prevState: ActionState,
   formData: FormData,
-): Promise<JobActionState> {
+): Promise<ActionState> {
   const rawData = Object.fromEntries(formData.entries()) as {
     [key: string]: string;
   };
@@ -58,9 +58,9 @@ export async function deleteJobAction(jobId: string): Promise<void> {
 }
 
 export async function editJobAction(
-  _prevState: JobActionState,
+  _prevState: ActionState,
   formData: FormData,
-): Promise<JobActionState> {
+): Promise<ActionState> {
   const jobId = formData.get("jobId") as string;
 
   const rawData = Object.fromEntries(formData.entries()) as {

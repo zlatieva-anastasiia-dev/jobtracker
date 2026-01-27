@@ -1,4 +1,4 @@
-import type { JobActionState } from "@/types/actions";
+import type { ActionState } from "@/types/actions";
 import type { Job, JobStatusVariant } from "../types/job";
 
 export const initialJobData: Job = {
@@ -24,7 +24,7 @@ export const statusOptions: JobStatusVariant[] = [
   "closed",
 ];
 
-export const initialActionState: JobActionState = {
+export const initialActionState: ActionState = {
   success: false,
   message: "",
 };

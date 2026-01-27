@@ -1,4 +1,4 @@
-export interface JobActionState {
+export interface ActionState {
   success: boolean;
   errors?: { [key: string]: string };
   message: string;

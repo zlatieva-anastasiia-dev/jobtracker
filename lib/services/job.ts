@@ -1,10 +1,11 @@
+"use server";
 import { revalidatePath } from "next/cache";
 import type { Job } from "@/types/job";
-import { createClient } from "../supabase/server";
+import { createSupabaseServerClient } from "../supabase/server";
 
 export async function getJobs(): Promise<Job[]> {
   try {
-    const supabaseServer = await createClient();
+    const supabaseServer = await createSupabaseServerClient();
     const { data: jobs, error } = await supabaseServer
       .from("jobs")
       .select("*")
@@ -22,7 +23,7 @@ export async function getJobs(): Promise<Job[]> {
 }
 
 export async function createJob(jobData: Omit<Job, "id">): Promise<Job> {
-  const supabaseServer = await createClient();
+  const supabaseServer = await createSupabaseServerClient();
   const { data, error } = await supabaseServer
     .from("jobs")
     .insert([jobData])
@@ -39,7 +40,7 @@ export async function createJob(jobData: Omit<Job, "id">): Promise<Job> {
 }
 
 export async function deleteJob(jobId: string): Promise<void> {
-  const supabaseServer = await createClient();
+  const supabaseServer = await createSupabaseServerClient();
   const { error } = await supabaseServer.from("jobs").delete().eq("id", jobId);
 
   if (error) {
@@ -53,7 +54,7 @@ export async function editJob(
   jobId: string,
   jobData: Partial<Omit<Job, "id" | "created_at">>,
 ): Promise<Job> {
-  const supabaseServer = await createClient();
+  const supabaseServer = await createSupabaseServerClient();
   const { data, error } = await supabaseServer
     .from("jobs")
     .update(jobData)

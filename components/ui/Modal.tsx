@@ -44,7 +44,7 @@ export function Modal({ children, onClose }: ModalProps) {
         ref={modalRef}
       >
         <Button
-          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 text-xl"
+          className="absolute right-4 top-4 text-white hover:text-amber-50 text-xl cursor-pointer"
           onClick={onClose}
           aria-label="Close modal"
         >

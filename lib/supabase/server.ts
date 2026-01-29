@@ -1,20 +1,26 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
+function getEnvironmentVariables() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error("Missing Supabase Environment Variables");
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error("Missing Supabase Environment Variables");
+  }
+
+  return { supabaseUrl, supabaseKey };
 }
 
-export const createClient = async () => {
+export const createSupabaseServerClient = async () => {
+  const { supabaseUrl, supabaseKey } = getEnvironmentVariables();
   const cookieStore = await cookies();
   return createServerClient(supabaseUrl, supabaseKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll();
       },
+      //fro refresh tokens
       setAll(cookiesToSet) {
         try {
           cookiesToSet.forEach(({ name, value, options }) => {

@@ -1,6 +1,15 @@
 import { redirect } from "next/navigation";
-import { signIn, signUp } from "@/lib/services/auth";
-import { LoginSchema, SignUpSchema } from "@/lib/validation/authSchema";
+import {
+  sendPasswordReset,
+  signIn,
+  signUp,
+  updatePassword,
+} from "@/lib/services/auth";
+import {
+  LoginSchema,
+  ResetPasswordSchema,
+  SignUpSchema,
+} from "@/lib/validation/authSchema";
 import type { ActionState } from "@/types/actions";
 
 export async function signInAction(
@@ -66,6 +75,13 @@ export async function signUpAction(
   try {
     const { error, data } = await signUp(email, password);
 
+    if (data.user?.identities && data.user.identities.length === 0) {
+      return {
+        success: false,
+        message: "User already exists. Please log in instead.",
+      };
+    }
+
     if (data.user && !data.session) {
       return {
         success: true,
@@ -91,4 +107,60 @@ export async function signUpAction(
     success: false,
     message: "Something went wrong. Please try again.",
   };
+}
+
+export async function requestPasswordResetAction(
+  _prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const email = formData.get("email") as string;
+  const { error } = await sendPasswordReset(email);
+
+  if (error) {
+    return { success: false, message: error.message };
+  }
+  return {
+    success: true,
+    message: `If an account exists for ${email}, you will get an email with link for resetting your password`,
+  };
+}
+
+export async function resetPasswordAction(
+  _prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const password = formData.get("password") as string;
+  const confirmPassword = formData.get("confirmPassword") as string;
+
+  const validateResetData = ResetPasswordSchema.safeParse({
+    password,
+    confirmPassword,
+  });
+  if (!validateResetData.success) {
+    const formFieldErrors = validateResetData.error.flatten().fieldErrors;
+    return {
+      success: false,
+      message: "Please fix the errors below.",
+      errors: formFieldErrors as Record<string, string>,
+      values: { password, confirmPassword },
+    };
+  }
+
+  try {
+    const { error } = await updatePassword(password);
+
+    if (error) {
+      return {
+        success: false,
+        message: "Error resetting password: " + error.message,
+        values: { password },
+      };
+    }
+  } catch (_error) {
+    return {
+      success: false,
+      message: "Error resetting password",
+    };
+  }
+  redirect("/jobs");
 }

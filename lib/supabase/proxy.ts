@@ -7,7 +7,7 @@ export async function updateSession(request: NextRequest) {
   });
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     throw new Error("Missing Supabase Environment Variables");
@@ -42,20 +42,16 @@ export async function updateSession(request: NextRequest) {
 
   const user = data?.claims;
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth")
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
+  if (!user && !request.nextUrl.pathname.startsWith("/auth")) {
+    console.log("No user found, redirecting to login page.");
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = "/auth/login";
     return NextResponse.redirect(url);
-  } else if (
-    user &&
-    (request.nextUrl.pathname === "/login" ||
-      request.nextUrl.pathname.startsWith("/auth"))
-  ) {
+  }
+
+  // 2. If USER EXISTS and trying to access AUTH pages (login/signup)
+  else if (user && request.nextUrl.pathname.startsWith("/auth")) {
+    console.log("User found, redirecting to jobs page.");
     const url = request.nextUrl.clone();
     url.pathname = "/jobs";
     return NextResponse.redirect(url);

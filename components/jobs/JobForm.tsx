@@ -4,12 +4,12 @@ import { useActionState } from "react";
 import { createJobAction, editJobAction } from "@/app/actions/job";
 import { initialActionState } from "@/lib/constants";
 import type { Job } from "@/types/job";
-import { FieldControl } from "../form/FieldControl";
-import { FieldError } from "../form/FieldError";
-import { FieldInput } from "../form/FieldInput";
-import { FieldLabel } from "../form/FieldLabel";
-import { FieldSelect } from "../form/FieldSelect";
-import { FieldTextarea } from "../form/FieldTextarea";
+import { EmailField } from "../form/EmailField";
+import { Form } from "../form/Form";
+import { SelectField } from "../form/SelectField";
+import { TelField } from "../form/TelField";
+import { TextareaField } from "../form/TextareaField";
+import TextField from "../form/TextField";
 import { Button } from "../ui/Button";
 
 interface JobFormProps {
@@ -47,161 +47,54 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
       <h2 className="text-2xl font-bold mb-6 text-gray-900">
         {mode === "new" ? "Create New Job" : "Edit Job"}
       </h2>
-      <form className="space-y-3" action={formAction} noValidate>
+      <Form state={state} initialData={initialData} action={formAction}>
         {mode === "edit" && <input type="hidden" name="jobId" value={jobId} />}
-        <FieldControl
-          id="title"
-          isRequired
-          isInvalid={!!state.errors?.title}
-          errorMessage={state.errors?.title}
-        >
-          <FieldLabel>Job Title</FieldLabel>
-          <FieldInput
-            type="text"
-            name="title"
-            defaultValue={state.values?.title ?? initialData?.title ?? ""}
-            placeholder="e.g. Software Engineer"
-          />
-          <FieldError />
-        </FieldControl>
-
-        <FieldControl
-          id="company"
-          isRequired
-          isInvalid={!!state.errors?.company}
-          errorMessage={state.errors?.company}
-        >
-          <FieldLabel>Company</FieldLabel>
-          <FieldInput
-            type="text"
-            name="company"
-            defaultValue={state.values?.company ?? initialData?.company ?? ""}
-            placeholder="e.g. Tech Corp"
-          />
-          <FieldError />
-        </FieldControl>
-        <FieldControl
-          id="location"
-          isInvalid={!!state.errors?.location}
-          errorMessage={state.errors?.location}
-        >
-          <FieldLabel>Location</FieldLabel>
-          <FieldInput
-            type="text"
-            name="location"
-            defaultValue={state.values?.location ?? initialData?.location ?? ""}
-            placeholder="e.g. New York, NY"
-          />
-          <FieldError />
-        </FieldControl>
-        <FieldControl
+        <TextField id="title" isRequired name="title" label="Job Title" />
+        <TextField id="company" isRequired name="company" label="Company" />
+        <TextField id="location" name="location" label="Location" />
+        <TextField
           id="date"
-          isRequired
-          isInvalid={!!state.errors?.date}
-          errorMessage={state.errors?.date}
-        >
-          <FieldLabel>Application Date</FieldLabel>
-
-          <FieldInput type="date" name="date" defaultValue={dateValue} />
-          <FieldError />
-        </FieldControl>
-        <FieldControl
-          id="status"
-          isInvalid={!!state.errors?.status}
-          errorMessage={state.errors?.status}
-        >
-          <FieldLabel>Status</FieldLabel>
-          <FieldSelect
-            name="status"
-            defaultValue={
-              state.values?.status ?? initialData?.status ?? "applied"
-            }
-          >
-            <option value="applied">Applied</option>
-            <option value="interview">Interview</option>
-            <option value="offer">Offer</option>
-            <option value="rejected">Rejected</option>
-            <option value="closed">Closed</option>
-          </FieldSelect>
-          <FieldError />
-        </FieldControl>
-
-        <FieldControl
+          name="date"
+          label="Application Date"
+          type="date"
+          defaultValue={dateValue}
+        />
+        <SelectField id="status" name="status" label="Status">
+          <option value="applied">Applied</option>
+          <option value="interview">Interview</option>
+          <option value="offer">Offer</option>
+          <option value="rejected">Rejected</option>
+          <option value="closed">Closed</option>
+        </SelectField>
+        <TextareaField
           id="description"
-          isInvalid={!!state.errors?.description}
-          errorMessage={state.errors?.description}
-        >
-          <FieldLabel>Description</FieldLabel>
-          <FieldTextarea
-            name="description"
-            defaultValue={
-              state.values?.description ?? initialData?.description ?? ""
-            }
-          />
-
-          <FieldError />
-        </FieldControl>
-
+          name="description"
+          label="Description"
+          rows={3}
+        />
         <fieldset className="border border-gray-200 rounded-lg p-4">
           <legend className="text-sm font-medium px-2">
             Contact Information
           </legend>
           <div className="space-y-4 mt-2">
-            <FieldControl
+            <TextField
               id="contactName"
-              isInvalid={!!state.errors?.contactName}
-              errorMessage={state.errors?.contactName}
-            >
-              <FieldLabel>Contact Name</FieldLabel>
-              <FieldInput
-                type="text"
-                name="contactName"
-                defaultValue={
-                  state.values?.contactName ?? initialData?.contact?.name ?? ""
-                }
-                placeholder="e.g. Jane Doe"
-              />
-              <FieldError />
-            </FieldControl>
-            <FieldControl
+              name="contactName"
+              label="Contact Name"
+            />
+            <EmailField
               id="contactEmail"
-              isInvalid={!!state.errors?.contactEmail}
-              errorMessage={state.errors?.contactEmail}
-            >
-              <FieldLabel>Contact Email</FieldLabel>
-              <FieldInput
-                type="email"
-                name="contactEmail"
-                defaultValue={
-                  state.values?.contactEmail ??
-                  initialData?.contact?.email ??
-                  ""
-                }
-                placeholder="jane.doe@company.com"
-              />
-              <FieldError />
-            </FieldControl>
-            <FieldControl
+              name="contactEmail"
+              label="Contact Email"
+              placeholder="jane.doe@company.com"
+            />
+            <TelField
               id="contactPhone"
-              isInvalid={!!state.errors?.contactPhone}
-              errorMessage={state.errors?.contactPhone}
-            >
-              <FieldLabel>Contact Phone</FieldLabel>
-              <FieldInput
-                type="tel"
-                name="contactPhone"
-                defaultValue={
-                  state.values?.contactPhone ??
-                  initialData?.contact?.phone ??
-                  ""
-                }
-                placeholder="123-456-7890"
-              />
-              <FieldError />
-            </FieldControl>
+              name="contactPhone"
+              label="Contact Phone"
+            />
           </div>
         </fieldset>
-
         <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
           <Button
             onClick={handleCloseForm}
@@ -211,7 +104,6 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
           >
             Cancel
           </Button>
-
           <Button type="submit" disabled={isPending}>
             {isPending
               ? "Submitting..."
@@ -220,7 +112,7 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
                 : "Update Job"}
           </Button>
         </div>
-      </form>
+      </Form>
     </div>
   );
 }

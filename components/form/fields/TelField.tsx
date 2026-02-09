@@ -1,4 +1,4 @@
-import TextField, { type TextFieldProps } from "./TextField";
+import { TextField, type TextFieldProps } from "./TextField";
 
 type TelFieldProps = Omit<TextFieldProps, "type">;
 

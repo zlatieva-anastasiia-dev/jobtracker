@@ -1,11 +1,9 @@
 "use client";
 import type { LucideIcon } from "lucide-react";
 import type { ButtonHTMLAttributes } from "react";
-import { Button } from "./Button";
 
 export type IconButtonProps = {
   icon: LucideIcon;
-  "aria-label": string;
   size?: number;
   variant?: "ghost" | "filled" | "danger";
   onClick: () => void;
@@ -25,10 +23,10 @@ export function IconButton({
     filled: "bg-blue-500 hover:bg-blue-600 text-white",
     danger: "text-red-500 hover:bg-gray-100",
   };
-  const base = `p-2 rounded-md transition-colors`;
+  const base = `p-2 rounded-md transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`;
 
   return (
-    <Button
+    <button
       type="button"
       onClick={onClick}
       className={`${base} ${variantStyles[variant]} ${className}`}
@@ -36,6 +34,6 @@ export function IconButton({
       {...rest}
     >
       <Icon className="w-4 h-4" size={size} />
-    </Button>
+    </button>
   );
 }

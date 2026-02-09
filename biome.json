@@ -25,10 +25,12 @@
   "linter": {
     "enabled": true,
     "rules": {
+      "a11y": "info",
       "recommended": true,
       "correctness": {
         "noUnusedImports": "error",
-        "noUnusedVariables": "error"
+        "noUnusedVariables": "error",
+        "noPrivateImports": "error"
       }
     }
   },

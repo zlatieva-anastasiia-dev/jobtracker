@@ -1,16 +1,6 @@
-import { createContext, useContext } from "react";
 import type { Job } from "@/types/job";
-import { useFormContext } from "./Form";
-
-type FieldControlContextType = {
-  id: string;
-  isRequired?: boolean;
-  isInvalid: boolean;
-  errorMessageId: string;
-  name: string;
-  errorMessage?: string;
-  defaultValue?: string;
-};
+import { FieldControlContext, useFieldContext } from "./context/FieldContext";
+import { useFormContext } from "./context/FormContext";
 
 export type FieldProps = {
   id: string;
@@ -18,19 +8,6 @@ export type FieldProps = {
   name: string;
   children: React.ReactNode;
 };
-
-const FieldControlContext = createContext<FieldControlContextType | null>(null);
-
-export function useFieldContext() {
-  const context = useContext(FieldControlContext);
-
-  if (!context) {
-    throw new Error(
-      "useFieldControlContext must be used within a FormControl.",
-    );
-  }
-  return context;
-}
 
 export function Field({ id, isRequired, children, name }: FieldProps) {
   const { state, initialData } = useFormContext();

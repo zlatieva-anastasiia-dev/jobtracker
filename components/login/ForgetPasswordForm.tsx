@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { requestPasswordResetAction } from "@/app/actions/auth";
+import { EmailField, Form } from "@/components/form";
 import { initialActionState } from "@/lib/constants";
 
 export function ForgetPasswordForm() {
@@ -28,26 +29,15 @@ export function ForgetPasswordForm() {
     );
   }
   return (
-    <form action={formAction} className="flex flex-col gap-4">
-      <div>
-        <label htmlFor="email" className="block mb-1 font-medium">
-          Email Address
-        </label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          required
-          className="w-full px-3 py-2 border rounded-lg"
-        />
-      </div>
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-        disabled={isPending}
-      >
-        Send Reset Link
-      </button>
-    </form>
+    <Form action={formAction} state={state} isPending={isPending}>
+      <Form.Heading>Forgot your password?</Form.Heading>
+      <Form.Message />
+      <Form.Fields>
+        <EmailField id="email" name="email" label="Email Address" isRequired />
+      </Form.Fields>
+      <Form.Actions>
+        <Form.Button>Send Reset Link</Form.Button>
+      </Form.Actions>
+    </Form>
   );
 }

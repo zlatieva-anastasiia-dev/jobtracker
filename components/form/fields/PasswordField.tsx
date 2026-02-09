@@ -1,6 +1,6 @@
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { Field } from "./Field";
+import { Field } from "../Field";
 import type { TextFieldProps } from "./TextField";
 
 type PasswordFieldProps = Omit<TextFieldProps, "type">;

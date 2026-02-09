@@ -1,8 +1,9 @@
 "use client";
 
+import { X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Button } from "./Button";
+import { IconButton } from "./IconButton";
 
 interface ModalProps {
   children: React.ReactNode;
@@ -43,14 +44,7 @@ export function Modal({ children, onClose }: ModalProps) {
         tabIndex={-1}
         ref={modalRef}
       >
-        <Button
-          className="absolute right-4 top-4 text-white hover:text-amber-50 text-xl cursor-pointer"
-          onClick={onClose}
-          aria-label="Close modal"
-        >
-          ✕
-        </Button>
-
+        <IconButton icon={X} onClick={onClose} aria-label="Close modal" />
         {children}
       </div>
     </div>,

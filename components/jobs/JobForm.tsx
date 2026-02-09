@@ -2,15 +2,16 @@
 import { useRouter } from "next/navigation";
 import { useActionState } from "react";
 import { createJobAction, editJobAction } from "@/app/actions/job";
+import {
+  EmailField,
+  Form,
+  SelectField,
+  TelField,
+  TextareaField,
+  TextField,
+} from "@/components/form";
 import { initialActionState } from "@/lib/constants";
 import type { Job } from "@/types/job";
-import { EmailField } from "../form/EmailField";
-import { Form } from "../form/Form";
-import { SelectField } from "../form/SelectField";
-import { TelField } from "../form/TelField";
-import { TextareaField } from "../form/TextareaField";
-import TextField from "../form/TextField";
-import { Button } from "../ui/Button";
 
 interface JobFormProps {
   mode: "new" | "edit";
@@ -43,12 +44,19 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
   const dateValue = formatDateForInput(initialDate);
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900">
+    <Form
+      state={state}
+      initialData={initialData}
+      action={formAction}
+      isPending={isPending}
+      variant="modal"
+    >
+      {mode === "edit" && <input type="hidden" name="jobId" value={jobId} />}
+      <Form.Heading>
         {mode === "new" ? "Create New Job" : "Edit Job"}
-      </h2>
-      <Form state={state} initialData={initialData} action={formAction}>
-        {mode === "edit" && <input type="hidden" name="jobId" value={jobId} />}
+      </Form.Heading>
+      <Form.Message />
+      <Form.Fields>
         <TextField id="title" isRequired name="title" label="Job Title" />
         <TextField id="company" isRequired name="company" label="Company" />
         <TextField id="location" name="location" label="Location" />
@@ -72,47 +80,35 @@ export function JobForm({ mode, jobId, initialData }: JobFormProps) {
           label="Description"
           rows={3}
         />
-        <fieldset className="border border-gray-200 rounded-lg p-4">
-          <legend className="text-sm font-medium px-2">
-            Contact Information
-          </legend>
-          <div className="space-y-4 mt-2">
-            <TextField
-              id="contactName"
-              name="contactName"
-              label="Contact Name"
-            />
-            <EmailField
-              id="contactEmail"
-              name="contactEmail"
-              label="Contact Email"
-              placeholder="jane.doe@company.com"
-            />
-            <TelField
-              id="contactPhone"
-              name="contactPhone"
-              label="Contact Phone"
-            />
-          </div>
-        </fieldset>
+        <Form.Section title="Contact Information">
+          <TextField id="contactName" name="contactName" label="Contact Name" />
+          <EmailField
+            id="contactEmail"
+            name="contactEmail"
+            label="Contact Email"
+            placeholder="jane.doe@company.com"
+          />
+          <TelField
+            id="contactPhone"
+            name="contactPhone"
+            label="Contact Phone"
+          />
+        </Form.Section>
+      </Form.Fields>
+      <Form.Actions>
         <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
-          <Button
-            onClick={handleCloseForm}
+          <Form.Button
             type="button"
-            disabled={isPending}
             variant="secondary"
+            onClick={handleCloseForm}
           >
             Cancel
-          </Button>
-          <Button type="submit" disabled={isPending}>
-            {isPending
-              ? "Submitting..."
-              : mode === "new"
-                ? "Create Job"
-                : "Update Job"}
-          </Button>
+          </Form.Button>
+          <Form.Button type="submit" disabled={isPending}>
+            {mode === "new" ? "Create Job" : "Update Job"}
+          </Form.Button>
         </div>
-      </Form>
-    </div>
+      </Form.Actions>
+    </Form>
   );
 }

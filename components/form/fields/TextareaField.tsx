@@ -1,4 +1,4 @@
-import { Field, type FieldProps } from "./Field";
+import { Field, type FieldProps } from "../Field";
 
 type TextareaFieldProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> &
   Omit<FieldProps, "children"> & { label: string };

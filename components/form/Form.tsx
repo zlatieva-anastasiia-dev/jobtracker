@@ -1,32 +1,52 @@
-import { createContext, useContext } from "react";
 import type { ActionState } from "@/types/actions";
 import type { Job } from "@/types/job";
+import { cn } from "@/utils/helpers";
+import { FormContext } from "./context/FormContext";
+import { FormActions } from "./layout/FormActions";
+import { FormButton } from "./layout/FormButton";
+import { FormFields } from "./layout/FormFields";
+import { FormHeading } from "./layout/FormHeading";
+import { FormErrorMessage } from "./layout/FormMessage";
+import { FormSection } from "./layout/FormSection";
 
-type FormProps = {
+export type FormProps = {
   state: ActionState;
-  initialData?: Job;
   children: React.ReactNode;
   action: (payload: FormData) => void;
+  isPending: boolean;
+  initialData?: Job;
+  variant?: "default" | "modal";
 };
+export function Form({
+  state,
+  children,
+  initialData,
+  action,
+  isPending = false,
+  variant = "default",
+}: FormProps) {
+  const baseStyles = "w-full text-gray-900 mx-auto transition-all";
 
-type FormContextType = Pick<FormProps, "state" | "initialData">;
-
-const FormContext = createContext<FormContextType | null>(null);
-
-export function useFormContext() {
-  const context = useContext(FormContext);
-  if (!context) {
-    throw new Error("useFormContext must be used within a FormProvider");
-  }
-  return context;
-}
-
-export function Form({ state, children, initialData, action }: FormProps) {
+  const variantStyles = {
+    default: "bg-white p-8 rounded-xl shadow-lg max-w-md",
+    modal: "bg-transparent p-6 shadow-none max-w-full",
+  };
   return (
-    <FormContext.Provider value={{ state, initialData }}>
-      <form action={action} noValidate>
+    <FormContext.Provider value={{ state, initialData, isPending }}>
+      <form
+        action={action}
+        noValidate
+        className={cn(baseStyles, variantStyles[variant])}
+      >
         {children}
       </form>
     </FormContext.Provider>
   );
 }
+
+Form.Heading = FormHeading;
+Form.Message = FormErrorMessage;
+Form.Fields = FormFields;
+Form.Actions = FormActions;
+Form.Button = FormButton;
+Form.Section = FormSection;

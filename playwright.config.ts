@@ -1,16 +1,18 @@
+import path from "node:path";
 import { defineConfig, devices } from "@playwright/test";
+import dotenv from "dotenv";
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+dotenv.config({ path: path.resolve(__dirname, ".env.local") });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+
+const STORAGE_STATE = "playwright/.auth/user.json";
 export default defineConfig({
   testDir: "./tests",
   /* Run tests in files in parallel */
@@ -40,19 +42,45 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    { name: "setup", testMatch: /.*\.setup\.ts/ },
+
+    // Projects that don't require authentication
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: "chromium-unauthenticated",
+      use: {
+        ...devices["Desktop Chrome"],
+      },
+      testMatch: /.*login\.spec\.ts/,
     },
 
     {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
+      name: "chromium-logged-in",
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: STORAGE_STATE,
+      },
+      dependencies: ["setup"],
+      testIgnore: /.*login\.spec\.ts/,
     },
 
     {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
+      name: "firefox-logged-in",
+      use: {
+        ...devices["Desktop Firefox"],
+        storageState: STORAGE_STATE,
+      },
+      dependencies: ["setup"],
+      testIgnore: /.*login\.spec\.ts/,
+    },
+
+    {
+      name: "webkit-logged-in",
+      use: {
+        ...devices["Desktop Safari"],
+        storageState: STORAGE_STATE,
+      },
+      dependencies: ["setup"],
+      testIgnore: /.*login\.spec\.ts/,
     },
 
     /* Test against mobile viewports. */

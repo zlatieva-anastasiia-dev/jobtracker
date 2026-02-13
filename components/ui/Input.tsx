@@ -1,3 +1,6 @@
+"use client";
+import { useFieldContext } from "@/components/form/context/FieldContext";
+
 type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 export default function Input({
   name,
@@ -6,6 +9,8 @@ export default function Input({
   defaultValue,
   ...props
 }: InputProps) {
+  const formContext = useFieldContext();
+
   return (
     <input
       id={props.id}

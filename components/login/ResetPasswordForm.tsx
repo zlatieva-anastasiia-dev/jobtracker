@@ -1,3 +1,4 @@
+"use client";
 import { useActionState } from "react";
 import { resetPasswordAction } from "@/app/actions/auth";
 import { Form, PasswordField } from "@/components/form";

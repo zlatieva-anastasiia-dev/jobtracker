@@ -21,6 +21,19 @@ jobs:
       - name: Run Biome
         run: npx @biomejs/biome ci .
 
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: "npm"
+      - run: npm ci
+      - name: Scan for Next.js vulnerabilities
+        run: npx fix-react2shell-next
+
   build:
     name: Build Application
     runs-on: ubuntu-latest

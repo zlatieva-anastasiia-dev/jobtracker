@@ -1,10 +1,5 @@
 import { redirect } from "next/navigation";
-import {
-  sendPasswordReset,
-  signIn,
-  signUp,
-  updatePassword,
-} from "@/lib/services/auth";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   LoginSchema,
   ResetPasswordSchema,
@@ -31,12 +26,16 @@ export async function signInAction(
   }
 
   try {
-    const { error } = await signIn(email, password);
+    const supabase = await createSupabaseServerClient();
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
     if (error) {
       return {
         success: false,
-        message: "Error logging in: " + error.message,
+        message: `Error logging in: ${error.message}`,
         values: { email, password },
       };
     }
@@ -73,7 +72,14 @@ export async function signUpAction(
   }
 
   try {
-    const { error, data } = await signUp(email, password);
+    const supabase = await createSupabaseServerClient();
+    const { error, data } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/jobs`,
+      },
+    });
 
     if (data.user?.identities && data.user.identities.length === 0) {
       return {
@@ -92,7 +98,7 @@ export async function signUpAction(
     if (error) {
       return {
         success: false,
-        message: "Error signing up: " + error.message,
+        message: `Error signing up: ${error.message}`,
         values: { email, password },
       };
     }
@@ -114,11 +120,20 @@ export async function requestPasswordResetAction(
   formData: FormData,
 ): Promise<ActionState> {
   const email = formData.get("email") as string;
-  const { error } = await sendPasswordReset(email);
 
-  if (error) {
-    return { success: false, message: error.message };
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/reset-password`,
+    });
+
+    if (error) {
+      return { success: false, message: error.message };
+    }
+  } catch (_error) {
+    return { success: false, message: "Error requesting password reset" };
   }
+
   return {
     success: true,
     message: `If an account exists for ${email}, you will get an email with link for resetting your password`,
@@ -147,12 +162,13 @@ export async function resetPasswordAction(
   }
 
   try {
-    const { error } = await updatePassword(password);
+    const supabase = await createSupabaseServerClient();
+    const { error } = await supabase.auth.updateUser({ password });
 
     if (error) {
       return {
         success: false,
-        message: "Error resetting password: " + error.message,
+        message: `Error resetting password: ${error.message}`,
         values: { password },
       };
     }

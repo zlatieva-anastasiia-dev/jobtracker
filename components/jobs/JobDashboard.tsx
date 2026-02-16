@@ -1,11 +1,12 @@
 "use client";
 import { Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { signOutAction } from "@/app/actions/auth";
 import { JobCardList } from "@/components/jobs/JobCardList";
 import { JobForm } from "@/components/jobs/JobForm";
 import { IconButton } from "@/components/ui/IconButton";
 import { Modal } from "@/components/ui/Modal";
-import { signOut } from "@/lib/services/auth";
+
 import type { Job } from "@/types/job";
 
 export function JobDashboard({ jobData }: { jobData: Array<Job> }) {
@@ -19,12 +20,8 @@ export function JobDashboard({ jobData }: { jobData: Array<Job> }) {
   const handleClose = () => router.replace("/jobs");
 
   const handleSignOut = async () => {
-    const { error } = await signOut();
-    if (error) {
-      console.error("Error signing out:", error.message);
-    } else {
-      router.replace("/auth/login");
-    }
+    await signOutAction();
+    router.push("/auth/login");
   };
 
   const initialJobData = jobData.find((job) => job.id === jobId);

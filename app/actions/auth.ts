@@ -1,4 +1,5 @@
 "use server";
+import * as Sentry from "@sentry/nextjs";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   LoginSchema,
@@ -31,19 +32,16 @@ export async function signInAction(
   }
 
   const supabase = await createSupabaseServerClient();
-  const { error, data } = await supabase.auth.signInWithPassword({
+  const { error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
-  console.log("[signInAction] Login attempt result:", {
-    hasError: !!error,
-    hasSession: !!data.session,
-    hasUser: !!data.user,
-  });
-
   if (error) {
-    console.error("[signInAction] Login error:", error.message);
+    Sentry.captureException(error, {
+      tags: { action: "signIn" },
+      extra: { email },
+    });
     return {
       success: false,
       message: `Error logging in: ${error.message}`,
@@ -51,7 +49,6 @@ export async function signInAction(
     };
   }
 
-  console.log("[signInAction] Login successful, returning redirect");
   return {
     success: true,
     message: "Logged in successfully",
@@ -111,6 +108,10 @@ export async function signUpAction(
   }
 
   if (error) {
+    Sentry.captureException(error, {
+      tags: { action: "signUp" },
+      extra: { email },
+    });
     return {
       success: false,
       message: `Error signing up: ${error.message}`,
@@ -136,6 +137,10 @@ export async function requestPasswordResetAction(
   });
 
   if (error) {
+    Sentry.captureException(error, {
+      tags: { action: "requestPasswordReset" },
+      extra: { email },
+    });
     return { success: false, message: error.message };
   }
 
@@ -175,6 +180,9 @@ export async function resetPasswordAction(
   const { error } = await supabase.auth.updateUser({ password });
 
   if (error) {
+    Sentry.captureException(error, {
+      tags: { action: "resetPassword" },
+    });
     return {
       success: false,
       message: `Error resetting password: ${error.message}`,

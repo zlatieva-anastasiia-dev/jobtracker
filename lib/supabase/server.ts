@@ -2,19 +2,22 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-function getEnvironmentVariables() {
+export const createSupabaseServerClient = async () => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error("Missing Supabase Environment Variables");
+  if (!supabaseUrl) {
+    throw new Error(
+      "[lib/supabase/server.ts] Missing NEXT_PUBLIC_SUPABASE_URL environment variable",
+    );
   }
 
-  return { supabaseUrl, supabaseKey };
-}
+  if (!supabaseKey) {
+    throw new Error(
+      "[lib/supabase/server.ts] Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable",
+    );
+  }
 
-export const createSupabaseServerClient = async () => {
-  const { supabaseUrl, supabaseKey } = getEnvironmentVariables();
   const cookieStore = await cookies();
   return createServerClient(supabaseUrl, supabaseKey, {
     cookies: {

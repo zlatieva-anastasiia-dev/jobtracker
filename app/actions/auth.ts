@@ -1,5 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   LoginSchema,
@@ -44,8 +43,6 @@ export async function signInAction(
       values: { email, password },
     };
   }
-
-  revalidatePath("/", "layout");
 
   return {
     success: true,
@@ -182,4 +179,10 @@ export async function resetPasswordAction(
     message: "Password reset successfully",
     redirect: "/jobs",
   };
+}
+
+export async function signOutAction() {
+  const supabase = await createSupabaseServerClient();
+  await supabase.auth.signOut();
+  return { success: true };
 }

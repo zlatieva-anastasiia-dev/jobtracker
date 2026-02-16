@@ -13,10 +13,16 @@ export function LoginForm() {
   );
 
   useEffect(() => {
+    console.log("[LoginForm] State changed:", {
+      success: state.success,
+      redirect: state.redirect,
+      message: state.message,
+    });
     if (state.success && state.redirect) {
+      console.log("[LoginForm] Redirecting to:", state.redirect);
       router.push(state.redirect);
     }
-  }, [state.success, state.redirect, router]);
+  }, [state.success, state.redirect, router, state.message]);
 
   return (
     <Form state={state} action={formAction} isPending={isPending}>

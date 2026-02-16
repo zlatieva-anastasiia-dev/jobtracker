@@ -31,12 +31,19 @@ export async function signInAction(
   }
 
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { error, data } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
+  console.log("[signInAction] Login attempt result:", {
+    hasError: !!error,
+    hasSession: !!data.session,
+    hasUser: !!data.user,
+  });
+
   if (error) {
+    console.error("[signInAction] Login error:", error.message);
     return {
       success: false,
       message: `Error logging in: ${error.message}`,
@@ -44,6 +51,7 @@ export async function signInAction(
     };
   }
 
+  console.log("[signInAction] Login successful, returning redirect");
   return {
     success: true,
     message: "Logged in successfully",

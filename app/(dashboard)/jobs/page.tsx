@@ -4,8 +4,6 @@ import { getJobs } from "@/lib/services/job";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { JobDashboard } from "../../../components/jobs/JobDashboard";
 
-export const dynamic = "force-dynamic";
-
 export default async function JobsRoutePage() {
   const supabase = await createSupabaseServerClient();
   const {

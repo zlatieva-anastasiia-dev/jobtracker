@@ -1,20 +1,19 @@
 "use client";
 import type { LucideIcon } from "lucide-react";
 import type { ButtonHTMLAttributes } from "react";
+import { cn } from "@/utils/helpers";
 
 export type IconButtonProps = {
   icon: LucideIcon;
   size?: number;
   variant?: "ghost" | "filled" | "danger";
-  onClick: () => void;
-} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onClick">;
+} & ButtonHTMLAttributes<HTMLButtonElement>;
 
 export function IconButton({
   icon: Icon,
   "aria-label": ariaLabel,
-  onClick,
   variant = "ghost",
-  className = "",
+  className,
   size = 18,
   ...rest
 }: IconButtonProps) {
@@ -28,12 +27,11 @@ export function IconButton({
   return (
     <button
       type="button"
-      onClick={onClick}
-      className={`${base} ${variantStyles[variant]} ${className}`}
+      className={cn(base, variantStyles[variant], className)}
       aria-label={ariaLabel}
       {...rest}
     >
-      <Icon className="w-4 h-4" size={size} />
+      <Icon size={size} />
     </button>
   );
 }
